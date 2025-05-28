@@ -47,6 +47,13 @@ Doc : https://codeigniter4.github.io/userguide/models/model.html
 > php spark make:model NamaModel
 > php spark make:model UsersModel
 
+#--------------------------------------------------------------------
+# Timezone ke Asia/Jakarta
+#--------------------------------------------------------------------
+
+Ubah file =  app/Config/App.php
+// public string $appTimezone = 'UTC';
+public string $appTimezone = 'Asia/Jakarta';
 
 
 
