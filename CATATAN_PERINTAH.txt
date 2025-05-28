@@ -31,60 +31,6 @@ DOC : https://codeigniter4.github.io/userguide/dbmgmt/migration.html#database-mi
 > php spark make:migration Namanya
 > php spark make:migration Users
 
-public function up()
-    {
-        $this->forge->addField([
-            'id_users' => [
-                'type'           => 'INT',
-                'constraint'     => 11,
-                'unsigned'       => true,
-                'auto_increment' => true,
-            ],
-            'users_nama' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 128,
-            ],
-            'users_email' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 128,
-            ],
-            'users_password' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'users_active' => [
-                'type'       => 'TINYINT',
-                'constraint' => 1,
-                'unsigned'   => true,
-            ],
-            'users_level' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Admin', 'Guest'],
-            ],
-            'users_token' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 255,
-            ],
-            'users_add' => [
-                'type' => 'DATETIME',
-                'null' => false,
-            ],
-            'users_update' => [
-                'type' => 'DATETIME',
-                'null' => false,
-            ],
-        ]);
-
-        $this->forge->addKey('id_users', true);
-        $this->forge->createTable('tb_users');
-    }
-
-    public function down()
-    {
-        $this->forge->dropTable('tb_users');
-    }
-
-
 Menjalankan
 =============
 > php spark migrate
