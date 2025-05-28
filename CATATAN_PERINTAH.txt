@@ -1,0 +1,12 @@
+
+Install Composer
+> composer create-project codeigniter4/appstarter belajar-ci4 --no-dev
+
+
+
+
+
+
+
+
+============== PUDIN.MY.ID CODEIGNITER 4 ==================
