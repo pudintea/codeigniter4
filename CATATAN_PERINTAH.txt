@@ -19,8 +19,10 @@ CI_ENVIRONMENT = development
 > php spark serve
 > php spark serve --port=8081
 
-
-
+#--------------------------------------------------------------------
+# CREATE CONTROLLER WITH PHP SPARK
+#--------------------------------------------------------------------
+> php spark make:controller NamaController
 
 
 
