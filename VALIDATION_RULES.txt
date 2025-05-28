@@ -1,0 +1,43 @@
+helper('form');
+
+$rules = [
+    'users_nama' => [
+        'label'  => 'Nama Lengkap',
+        'rules'  => 'required|min_length[3]|max_length[128]',
+        'errors' => [
+            'required'    => 'Nama tidak boleh kosong.',
+            'min_length'  => 'Nama terlalu pendek.',
+            'max_length'  => 'Nama terlalu panjang.',
+        ]
+    ],
+    'users_email' => [
+        'label'  => 'Email',
+        'rules'  => 'required|valid_email|is_unique[users.users_email]',
+        'errors' => [
+            'required'    => 'Email harus diisi.',
+            'valid_email' => 'Format email tidak valid.',
+            'is_unique'   => 'Email sudah terdaftar.',
+        ]
+    ],
+    'password1' => [
+        'label'  => 'Password',
+        'rules'  => 'required|min_length[6]|matches[password2]',
+        'errors' => [
+            'required'   => 'Password harus diisi.',
+            'min_length' => 'Password terlalu pendek!',
+            'matches'    => 'Password tidak cocok!',
+        ]
+    ],
+    'password2' => [
+        'label'  => 'Konfirmasi Password',
+        'rules'  => 'required|matches[password1]',
+        'errors' => [
+            'required' => 'Konfirmasi password harus diisi.',
+            'matches'  => 'Konfirmasi password tidak cocok dengan password.',
+        ]
+    ],
+];
+
+
+
+=================== PUDIN.MY.ID ==========================
