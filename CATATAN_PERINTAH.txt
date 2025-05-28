@@ -24,7 +24,10 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 > php spark make:controller NamaController
 
-
+#--------------------------------------------------------------------
+# CREATE DATABASE MIGRATION WITH PHP SPARK
+#--------------------------------------------------------------------
+> php spark make:migration Namanya
 
 
 
