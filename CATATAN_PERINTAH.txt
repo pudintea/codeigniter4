@@ -27,7 +27,9 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 # CREATE DATABASE MIGRATION WITH PHP SPARK
 #--------------------------------------------------------------------
+DOC : https://codeigniter4.github.io/userguide/dbmgmt/migration.html#database-migrations
 > php spark make:migration Namanya
+> php spark make:migration Users
 
 
 
