@@ -1,5 +1,112 @@
 helper('form');
 
+public function tambah(): string
+    {
+        helper('form');
+        // Cek jika form disubmit
+        if ($this->request->getMethod() === 'post') {
+            $rules = [
+                'users_nama' => [
+                    'label'  => 'Nama Lengkap',
+                    'rules'  => 'required|min_length[3]|max_length[128]',
+                    'errors' => [
+                        'required'    => 'Nama tidak boleh kosong.',
+                        'min_length'  => 'Nama terlalu pendek.',
+                        'max_length'  => 'Nama terlalu panjang.',
+                    ]
+                ],
+                'users_email' => [
+                    'label'  => 'Email',
+                    'rules'  => 'required|valid_email|is_unique[tb_users.users_email]',
+                    'errors' => [
+                        'required'    => 'Email harus diisi.',
+                        'valid_email' => 'Format email tidak valid.',
+                        'is_unique'   => 'Email sudah terdaftar.',
+                    ]
+                ],
+                'password' => [
+                    'label'  => 'Password',
+                    'rules'  => 'required|min_length[6]|matches[password1]',
+                    'errors' => [
+                        'required'   => 'Password harus diisi.',
+                        'min_length' => 'Password terlalu pendek!',
+                        'matches'    => 'Password tidak cocok!',
+                    ]
+                ],
+                'password1' => [
+                    'label'  => 'Konfirmasi Password',
+                    'rules'  => 'required|matches[password]',
+                    'errors' => [
+                        'required' => 'Konfirmasi password harus diisi.',
+                        'matches'  => 'Konfirmasi password tidak cocok dengan password.',
+                    ]
+                ],
+            ];
+
+
+            if (!$this->validate($rules)) {
+                // Jika gagal validasi
+                return view('users/register', [
+                    'validation' => $this->validator
+                ]);
+            }
+
+            // Jika lolos validasi, lakukan penyimpanan atau proses lain
+            // ...
+        }
+
+        $this->data['pdn_title']        = 'Tambah '.$this->pdnTitle;
+        $this->data['pdn_url']          = $this->pdnUrl;
+        $this->data[$this->className]   = 'active';
+
+        $this->data['nama_lengkap'] = [
+            'name'    => 'nama_lengkap',
+            'id'      => 'nama_lengkap',
+            'type'    => 'text',
+            'class'   => 'form-control',
+            'required'=> 'required',
+            'value'   => set_value('nama_lengkap'),
+        ];
+        $this->data['email'] = [
+            'name'    => 'email',
+            'id'      => 'email',
+            'type'    => 'email',
+            'class'   => 'form-control',
+            'required'=> 'required',
+            'value'   => set_value('email'),
+        ];
+
+        $this->data['users_level'] = form_dropdown(
+            'users_level',
+            ['Admin' => 'Admin','Guest' => 'Guest'],
+            '',
+            ['class' => 'form-control', 'id' => 'users_level']
+        );
+
+        $this->data['password'] = [
+            'name'    => 'password',
+            'id'      => 'password',
+            'type'    => 'password',
+            'class'   => 'form-control',
+            'required'=> 'required',
+            'value'   => set_value('password'),
+        ];
+        $this->data['password1'] = [
+            'name'    => 'password1',
+            'id'      => 'password1',
+            'type'    => 'password',
+            'class'   => 'form-control',
+            'required'=> 'required',
+            'value'   => set_value('password1'),
+        ];
+
+        return view('users/tambah', $this->data);
+    }
+
+===========================================================
+
+===========================================================
+
 $rules = [
     'users_nama' => [
         'label'  => 'Nama Lengkap',
