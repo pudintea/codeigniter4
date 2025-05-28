@@ -16,6 +16,7 @@ CI_ENVIRONMENT = development
 # RUN PHP SPARK
 #--------------------------------------------------------------------
 > php spark serve
+> php spark serve --port=8081
 
 
 
