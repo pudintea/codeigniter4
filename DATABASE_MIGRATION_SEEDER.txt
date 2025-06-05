@@ -66,4 +66,44 @@ Menjalankan
 > php spark migrate:rollback
 > php spark migrate:refresh
 
+
+===========================
+SEEDER, Database Seeding
+===========================
+Doc : https://codeigniter.com/user_guide/dbmgmt/seeds.html
+
+BUAT
+> php spark make:seeder UsersSeeder
+
+public function run()
+    {
+        $data = [
+            'users_nama'        => 'Pudin Saepudin',
+            'users_email'       => 'pudin@email.id',
+            'users_password'     => password_hash('12345678', PASSWORD_DEFAULT),
+            'users_active'      => '1',
+            'users_level'       => 'Admin',
+            'users_token'       => bin2hex(random_bytes(16)),
+            'created_at'        => date('Y-m-d H:i:s'),
+            'updated_at'        => date('Y-m-d H:i:s'),
+
+        ];
+        // Using Query Builder
+        $this->db->table('tb_users')->insert($data);
+    }
+
+JALANKAN
+> php spark db:seed UsersSeeder
+
+
+
+
+
+
+
+
+
+
+
+
 =================== DATABASE MIGRATION PUDIN.MY.ID =====================
