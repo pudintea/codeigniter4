@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 $routes->get('/dashboard', 'Dashboard::index', ['filter'=>'pdnislogin']);
-$routes->match(['get','post'],'/login', 'Bo::login');
+$routes->match(['GET','POST'],'/login', 'Bo::login');
 $routes->get('/logout', 'Bo::logout');
 
 $routes->group('users', ['filter'=>'pdnislogin'], function($routes) {
