@@ -12,5 +12,5 @@ $routes->get('/logout', 'Bo::logout');
 
 $routes->group('users', ['filter'=>'pdnislogin'], function($routes) {
     $routes->get('/', 'UsersController::index');
-    $routes->get('/tambah', 'UsersController::tambah');
+    $routes->get('tambah', 'UsersController::tambah');
 });
