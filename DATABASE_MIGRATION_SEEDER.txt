@@ -39,11 +39,11 @@ public function up()
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
             ],
-            'users_add' => [
+            'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
             ],
-            'users_update' => [
+            'updated_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
             ],
