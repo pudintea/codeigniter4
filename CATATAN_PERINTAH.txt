@@ -63,6 +63,45 @@ Ubah file =  app/Config/App.php
 public string $appTimezone = 'Asia/Jakarta';
 
 
+============================ CONTROLLER ===============================
+
+    protected $data;
+    protected $urlName;
+    protected $folderName;
+    protected $menuActive;
+    protected $pdnTitle;
+
+    public function __construct()
+    {
+        $this->data         = [];
+        $this->urlName      = 'pegawai';
+        $this->folderName   = 'pegawai';
+        $this->menuActive   = 'menupegawai';
+        $this->pdnTitle     = 'Pegawai';
+    }
+
+
+========================== MODEL =====================================
+
+    protected $table            = 'tb_unit_kerja';
+    protected $primaryKey       = 'id_unit_kerja';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'object';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = ['unit_kerja_nama', 'parent_id', 'unit_kerja_level'];
+
+    protected bool $allowEmptyInserts = false;
+    protected bool $updateOnlyChanged = true;
+
+    protected array $casts = [];
+    protected array $castHandlers = [];
+
+    // Dates
+    protected $useTimestamps = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
 
 
 
