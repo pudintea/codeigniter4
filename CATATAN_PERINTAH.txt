@@ -43,6 +43,8 @@ DOC : https://codeigniter4.github.io/userguide/dbmgmt/migration.html#database-mi
 
 > php spark make:migration Namanya
 > php spark make:migration UsersMigration
+> php spark make:migration GroupsMigration
+> php spark make:migration UsersGroups
 
 Menjalankan
 =============
