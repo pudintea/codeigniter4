@@ -111,13 +111,13 @@ public function up()
                 'type' => 'TIMESTAMP',
                 'null' => false,
             ],
-            'updated_at' => [
-                'type' => 'TIMESTAMP',
+            'created_at' => [
+                'type' => 'DATETIME',
                 'null' => false,
             ],
-            'last_login' => [
-                'type' => 'TIMESTAMP',
-                'null' => true,
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
             ],
         ]);
 
