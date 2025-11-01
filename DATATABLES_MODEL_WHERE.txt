@@ -1,0 +1,230 @@
+<?php
+namespace App\Models;
+
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\Model;
+
+class Modelfile extends Model
+{
+    protected $table = "";
+    protected $column_order = array();
+    protected $column_search = array();
+    protected $order = array('' => '');
+    protected $request;
+    protected $db;
+    protected $dt;
+    
+    // Property untuk menyimpan kondisi WHERE
+    protected $whereConditions = [];
+    protected $orWhereConditions = [];
+    protected $whereInConditions = [];
+    protected $whereNotInConditions = [];
+
+    function __construct(RequestInterface $request)
+    {
+        parent::__construct();
+        $this->db = db_connect();
+        $this->request = $request;
+
+        $this->dt = $this->db->table($this->table);
+    }
+
+    /**
+     * Set kondisi WHERE
+     * @param mixed $field - bisa string atau array
+     * @param mixed $value - nilai untuk kondisi (optional jika $field adalah array)
+     */
+    public function setWhere($field, $value = null)
+    {
+        if (is_array($field)) {
+            $this->whereConditions = array_merge($this->whereConditions, $field);
+        } else {
+            $this->whereConditions[$field] = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * Set kondisi OR WHERE
+     */
+    public function setOrWhere($field, $value = null)
+    {
+        if (is_array($field)) {
+            $this->orWhereConditions = array_merge($this->orWhereConditions, $field);
+        } else {
+            $this->orWhereConditions[$field] = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * Set kondisi WHERE IN
+     */
+    public function setWhereIn($field, array $values)
+    {
+        $this->whereInConditions[$field] = $values;
+        return $this;
+    }
+
+    /**
+     * Set kondisi WHERE NOT IN
+     */
+    public function setWhereNotIn($field, array $values)
+    {
+        $this->whereNotInConditions[$field] = $values;
+        return $this;
+    }
+
+    /**
+     * Reset semua kondisi WHERE
+     */
+    public function resetWhere()
+    {
+        $this->whereConditions = [];
+        $this->orWhereConditions = [];
+        $this->whereInConditions = [];
+        $this->whereNotInConditions = [];
+        return $this;
+    }
+
+    /**
+     * Apply semua kondisi WHERE ke query builder
+     */
+    private function _apply_where_conditions()
+    {
+        // Apply WHERE conditions
+        if (!empty($this->whereConditions)) {
+            $this->dt->where($this->whereConditions);
+        }
+
+        // Apply OR WHERE conditions
+        if (!empty($this->orWhereConditions)) {
+            foreach ($this->orWhereConditions as $field => $value) {
+                $this->dt->orWhere($field, $value);
+            }
+        }
+
+        // Apply WHERE IN conditions
+        if (!empty($this->whereInConditions)) {
+            foreach ($this->whereInConditions as $field => $values) {
+                $this->dt->whereIn($field, $values);
+            }
+        }
+
+        // Apply WHERE NOT IN conditions
+        if (!empty($this->whereNotInConditions)) {
+            foreach ($this->whereNotInConditions as $field => $values) {
+                $this->dt->whereNotIn($field, $values);
+            }
+        }
+    }
+
+    private function _get_datatables_query()
+    {
+        // Apply WHERE conditions terlebih dahulu
+        $this->_apply_where_conditions();
+
+        $i = 0;
+        foreach ($this->column_search as $item) {
+            if ($this->request->getPost('search')['value']) {
+                if ($i === 0) {
+                    $this->dt->groupStart();
+                    $this->dt->like($item, $this->request->getPost('search')['value']);
+                } else {
+                    $this->dt->orLike($item, $this->request->getPost('search')['value']);
+                }
+                if (count($this->column_search) - 1 == $i)
+                    $this->dt->groupEnd();
+            }
+            $i++;
+        }
+
+        if ($this->request->getPost('order')) {
+            $this->dt->orderBy($this->column_order[$this->request->getPost('order')['0']['column']], $this->request->getPost('order')['0']['dir']);
+        } else if (isset($this->order)) {
+            $order = $this->order;
+            $this->dt->orderBy(key($order), $order[key($order)]);
+        }
+    }
+
+    function get_datatables()
+    {
+        $this->_get_datatables_query();
+        if ($this->request->getPost('length') != -1)
+            $this->dt->limit($this->request->getPost('length'), $this->request->getPost('start'));
+        $query = $this->dt->get();
+        return $query->getResult();
+    }
+
+    function count_filtered()
+    {
+        $this->_get_datatables_query();
+        return $this->dt->countAllResults();
+    }
+
+    public function count_all()
+    {
+        $tbl_storage = $this->db->table($this->table);
+        
+        // Apply WHERE conditions untuk count_all juga
+        if (!empty($this->whereConditions)) {
+            $tbl_storage->where($this->whereConditions);
+        }
+        if (!empty($this->whereInConditions)) {
+            foreach ($this->whereInConditions as $field => $values) {
+                $tbl_storage->whereIn($field, $values);
+            }
+        }
+        if (!empty($this->whereNotInConditions)) {
+            foreach ($this->whereNotInConditions as $field => $values) {
+                $tbl_storage->whereNotIn($field, $values);
+            }
+        }
+        
+        return $tbl_storage->countAllResults();
+    }
+}
+
+=====================================================================================================================
+
+Saya sudah melengkapi model dengan fitur WHERE clause. Berikut penjelasan penambahannya:
+Fitur Baru:
+1. Property untuk WHERE conditions (baris 18-21)
+
+$whereConditions - untuk WHERE biasa
+$orWhereConditions - untuk OR WHERE
+$whereInConditions - untuk WHERE IN
+$whereNotInConditions - untuk WHERE NOT IN
+
+2. Method-method baru:
+setWhere($field, $value) - Set kondisi WHERE
+php$model->setWhere('status', 1);
+// atau multiple
+$model->setWhere(['status' => 1, 'active' => 1]);
+setOrWhere($field, $value) - Set kondisi OR WHERE
+php$model->setOrWhere('type', 'A');
+setWhereIn($field, $values) - Set WHERE IN
+php$model->setWhereIn('id', [1, 2, 3, 4]);
+setWhereNotIn($field, $values) - Set WHERE NOT IN
+php$model->setWhereNotIn('status', [0, 99]);
+resetWhere() - Reset semua kondisi WHERE
+3. Contoh Penggunaan di Controller:
+php$model = new Modelfile($this->request);
+
+// Set WHERE conditions sebelum get_datatables
+$model->setWhere('status', 1)
+      ->setWhere('deleted_at', null)
+      ->setWhereIn('role_id', [1, 2, 3]);
+
+$data = [
+    'draw' => $this->request->getPost('draw'),
+    'recordsTotal' => $model->count_all(),
+    'recordsFiltered' => $model->count_filtered(),
+    'data' => $model->get_datatables()
+];
+Semua kondisi WHERE akan otomatis diterapkan pada query DataTables dan count!
+
+
+
+
+==== PUDIN
