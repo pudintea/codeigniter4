@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class LaporanMuridModel extends Model
+{
+    protected $DBGroup          = 'default';
+    protected $returnType       = 'object';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = false; // karena tidak ada insert/update
+    protected $table            = null;  // opsional, bisa diatur dalam tiap method
+
+    /**
+     * Contoh method untuk ambil data laporan murid
+     */
+    public function getLaporanMurid($filter = [])
+    {
+        $builder = $this->db->table('murid')
+                            ->select('murid.*, kelas.nama_kelas, guru.nama_guru')
+                            ->join('kelas', 'kelas.id = murid.kelas_id', 'left')
+                            ->join('guru', 'guru.id = kelas.guru_id', 'left');
+
+        if (!empty($filter['kelas_id'])) {
+            $builder->where('murid.kelas_id', $filter['kelas_id']);
+        }
+
+        if (!empty($filter['tahun_ajaran'])) {
+            $builder->where('murid.tahun_ajaran', $filter['tahun_ajaran']);
+        }
+
+        return $builder->get()->getResult();
+    }
+
+    /**
+     * Contoh method lain untuk laporan rekap nilai
+     */
+    public function getRekapNilai($kelas_id)
+    {
+        return $this->db->table('nilai')
+            ->select('murid.nama_murid, mapel.nama_mapel, nilai.nilai')
+            ->join('murid', 'murid.id = nilai.murid_id')
+            ->join('mapel', 'mapel.id = nilai.mapel_id')
+            ->where('murid.kelas_id', $kelas_id)
+            ->get()
+            ->getResult();
+    }
+}
