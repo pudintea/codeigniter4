@@ -11,6 +11,7 @@ class LaporanMuridModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = false; // karena tidak ada insert/update
     protected $table            = null;  // opsional, bisa diatur dalam tiap method
+    protected $tbViewMurid      = 'v_dmurid';
 
     /**
      * Contoh method untuk ambil data laporan murid
@@ -45,5 +46,16 @@ class LaporanMuridModel extends Model
             ->where('murid.kelas_id', $kelas_id)
             ->get()
             ->getResult();
+    }
+     /**
+     * Tampilkan satu murid
+     */
+    function getMuridResult($idMurid)
+    {
+        return $this->db->table($this->tbViewMurid)
+            ->select('*')
+            ->where('id', $idMurid)
+            ->get()
+            ->getRow(); // lebih tepat untuk satu data
     }
 }
