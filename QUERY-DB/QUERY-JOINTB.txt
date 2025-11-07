@@ -1,0 +1,106 @@
+CREATE TABLE `sanksi` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `id_murid` int(11) UNSIGNED NOT NULL,
+  `id_pelanggaran` int(11) UNSIGNED NOT NULL,
+  `tanggal` date NOT NULL,
+  `nama_pelapor` varchar(254) NOT NULL,
+  `file_foto` varchar(254) NOT NULL,
+  `catatan` varchar(254) NOT NULL,
+  `active` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `murid` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `id_kelas` int(11) UNSIGNED NOT NULL,
+  `murid_nis` varchar(32) NOT NULL,
+  `murid_nama` varchar(254) NOT NULL,
+  `murid_telpon` varchar(32) NOT NULL,
+  `active` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `pelanggaran` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `pelanggaran_nama` varchar(254) NOT NULL,
+  `pelanggaran_point` int(11) UNSIGNED NOT NULL,
+  `active` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+MODEL
+==========================
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class SanksiModel extends Model
+{
+    protected $table = 'sanksi';
+    protected $primaryKey = 'id';
+    protected $allowedFields = [
+        'id_murid',
+        'id_pelanggaran',
+        'tanggal',
+        'nama_pelapor',
+        'file_foto',
+        'catatan',
+        'active',
+        'created_at',
+        'updated_at'
+    ];
+
+    /**
+     * Ambil semua data sanksi beserta murid dan pelanggaran
+     */
+    public function getAllSanksi()
+    {
+        return $this->select('
+                sanksi.*,
+                murid.murid_nis,
+                murid.murid_nama,
+                murid.murid_telpon,
+                pelanggaran.pelanggaran_nama,
+                pelanggaran.pelanggaran_point
+            ')
+            ->join('murid', 'murid.id = sanksi.id_murid')
+            ->join('pelanggaran', 'pelanggaran.id = sanksi.id_pelanggaran')
+            ->where('sanksi.active', 1)
+            ->orderBy('sanksi.tanggal', 'DESC')
+            ->findAll();
+    }
+
+    /**
+     * Ambil data sanksi berdasarkan ID
+     */
+    public function getSanksiById($id)
+    {
+        return $this->select('
+                sanksi.*,
+                murid.murid_nis,
+                murid.murid_nama,
+                murid.murid_telpon,
+                pelanggaran.pelanggaran_nama,
+                pelanggaran.pelanggaran_point
+            ')
+            ->join('murid', 'murid.id = sanksi.id_murid')
+            ->join('pelanggaran', 'pelanggaran.id = sanksi.id_pelanggaran')
+            ->where('sanksi.id', $id)
+            ->first();
+    }
+}
+
+
+
+
+
+
+
+
+
+============ Pudin Saepudin ============
