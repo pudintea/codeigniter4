@@ -50,7 +50,7 @@ class LaporanMuridModel extends Model
      /**
      * Tampilkan satu murid
      */
-    function getMuridResult($idMurid)
+    function getMuridRow($idMurid)
     {
         if (empty($idMurid)) {
             throw new \InvalidArgumentException('ID Murid harus diisi.');
