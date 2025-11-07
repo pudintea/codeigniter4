@@ -98,7 +98,16 @@ class SanksiModel extends Model
      * Hitung Jumlah Point, ini untuk kebutuhan Remisi
      */
 
-    public function JmlPoint($id_murid, $tgl_end)
+    public function JmlPoint($id_murid)
+    {
+        return $this->selectSum('pelanggaran.pelanggaran_point', 'total_point')
+            ->join('murid', 'murid.id = sanksi.id_murid')
+            ->join('pelanggaran', 'pelanggaran.id = sanksi.id_pelanggaran')
+            ->where('sanksi.id_murid', $id_murid)
+            ->first()['total_point'] ?? 0;
+    }
+
+    public function JmlPointUntukRemisi($id_murid, $tgl_end)
     {
         // Mundur 1 tahun 3 bulan dari tanggal sekarang
         $tgl_start = date('Y-m-d', strtotime('-1 year -3 months'));
