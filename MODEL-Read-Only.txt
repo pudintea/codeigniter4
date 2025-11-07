@@ -52,10 +52,14 @@ class LaporanMuridModel extends Model
      */
     function getMuridResult($idMurid)
     {
+        if (empty($idMurid)) {
+            throw new \InvalidArgumentException('ID Murid harus diisi.');
+        }
+    
         return $this->db->table($this->tbViewMurid)
             ->select('*')
             ->where('id', $idMurid)
             ->get()
-            ->getRow(); // lebih tepat untuk satu data
+            ->getRow();
     }
 }
