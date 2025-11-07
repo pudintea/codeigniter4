@@ -95,7 +95,7 @@ class SanksiModel extends Model
     }
 
     /**
-     * Hitung Jumlah Point
+     * Hitung Jumlah Point, ini untuk kebutuhan Remisi
      */
 
     public function JmlPoint($id_murid, $tgl_end)
