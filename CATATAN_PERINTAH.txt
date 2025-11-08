@@ -34,7 +34,10 @@ Doc : https://codeigniter4.github.io/userguide/models/model.html
 > php spark make:model NamaModel
 > php spark make:model UsersModel
 
-
+#--------------------------------------------------------------------
+# ENV
+#--------------------------------------------------------------------
+<?= env('PDN_KOORDINATOR_TANSE', 'Koordinator Default');?>
 
 #--------------------------------------------------------------------
 # CREATE DATABASE MIGRATION WITH PHP SPARK
