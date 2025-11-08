@@ -123,7 +123,28 @@ class SanksiModel extends Model
     }
 }
 
+// POINT DIATAS 25 POINT
+public function getMuridDenganPoin(int $idKelas)
+{
+    if ($idKelas <= 0) {
+        throw new \InvalidArgumentException('ID Kelas harus valid.');
+    }
 
+    return $this->select('
+            murid.murid_nis,
+            murid.murid_nama,
+            IFNULL(SUM(pelanggaran.pelanggaran_point), 0) AS total_point
+        ')
+        ->join('sanksi', 'sanksi.id_murid = murid.id', 'left')
+        ->join('pelanggaran', 'pelanggaran.id = sanksi.id_pelanggaran', 'left')
+        ->where('murid.active', 1)
+        ->where('murid.id_kelas', $idKelas)
+        ->groupBy('murid.id')
+        ->having('total_point >=', 25)  // 🔥 Hanya tampilkan murid dengan poin ≥ 25
+        ->orderBy('murid.murid_nama', 'ASC')
+        ->asArray()
+        ->findAll();
+}
 
 
 
