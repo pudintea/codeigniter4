@@ -1,0 +1,125 @@
+LINK : https://github.com/shuchkin/simplexlsx
+
+== CONTROLLER 
+
+<?php
+
+namespace App\Controllers;
+
+use App\Libraries\SimpleXLSX;
+use App\Models\MyModel;
+
+class ExcelController extends BaseController
+{
+    public function index()
+    {
+        return view('import_excel');
+    }
+    public function import()
+    {
+        $file = $this->request->getFile('excel_file');
+    
+        if ($file->isValid() && !$file->hasMoved()) {
+            $path = $file->getTempName();
+    
+            if ($xlsx = SimpleXLSX::parse($path)) {
+                $dataInsert = [];
+                $model = new MyModel();
+                $rowNumber = 1; // untuk notifikasi baris
+                $emptyNisRows = [];
+    
+                foreach ($xlsx->rows() as $index => $row) {
+                    if ($index === 0) continue; // skip header
+                    $rowNumber++;
+    
+                    $nis = $row[0] ?? null;
+                    $nama = $row[1] ?? '';
+                    $email = $row[2] ?? '';
+                    $telpon = $row[3] ?? '';
+    
+                    if (empty($nis)) {
+                        // Nis kosong → hentikan proses
+                        $emptyNisRows[] = $rowNumber;
+                        continue;
+                    }
+    
+                    // Cek apakah nis sudah ada
+                    $existing = $model->where('nis', $nis)->first();
+                    if ($existing) {
+                        continue; // skip jika nis sudah ada
+                    }
+    
+                    $dataInsert[] = [
+                        'nis' => $nis,
+                        'nama' => $nama,
+                        'email' => $email,
+                        'telpon' => $telpon,
+                    ];
+                }
+    
+                if (!empty($emptyNisRows)) {
+                    $rows = implode(', ', $emptyNisRows);
+                    return redirect()->back()->with('error', "Import dihentikan. NIS kosong pada baris: $rows");
+                }
+    
+                if (!empty($dataInsert)) {
+                    $model->insertBatch($dataInsert);
+                    $count = count($dataInsert);
+                    return redirect()->back()->with('message', "$count data berhasil diimport!");
+                } else {
+                    return redirect()->back()->with('message', "Tidak ada data baru yang diimport. Semua NIS sudah ada di database.");
+                }
+            } else {
+                return redirect()->back()->with('error', SimpleXLSX::parseError());
+            }
+        } else {
+            return redirect()->back()->with('error', 'File tidak valid.');
+        }
+    }
+
+}
+
+============== ROUTES
+$routes->get('excel', 'ExcelController::index');
+$routes->post('excel/import', 'ExcelController::import');
+
+
+========= VIEWS
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Import Excel</title>
+</head>
+<body>
+    <h2>Import Excel</h2>
+
+    <?php if(session()->getFlashdata('message')): ?>
+        <p style="color:green"><?= session()->getFlashdata('message') ?></p>
+    <?php endif; ?>
+
+    <?php if(session()->getFlashdata('error')): ?>
+        <p style="color:red"><?= session()->getFlashdata('error') ?></p>
+    <?php endif; ?>
+
+    <form method="post" action="<?= base_url('excel/import') ?>" enctype="multipart/form-data">
+        <input type="file" name="excel_file" required>
+        <button type="submit">Import Excel</button>
+    </form>
+</body>
+</html>
+
+================== LIBRARIES 
+Ubah bagian atas file SimpleXLSX.php menjadi:
+
+<?php
+namespace App\Libraries;
+
+
+
+
+
+
+
+
+// ================= END ================================
