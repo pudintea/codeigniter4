@@ -18,6 +18,7 @@ CI_ENVIRONMENT = development
 #--------------------------------------------------------------------
 > php spark serve
 > php spark serve --port=8081
+> php spark serve --port 3001 (Bisa Saya Gunakan)
 
 #--------------------------------------------------------------------
 # CREATE CONTROLLER WITH PHP SPARK
