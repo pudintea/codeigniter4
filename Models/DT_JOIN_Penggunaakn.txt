@@ -1,0 +1,128 @@
+=======================================
+    // JOSN DATATBLES
+    public function data_json()
+    {
+        $request = \Config\Services::request();
+
+        // Konfigurasi datatables (fleksibel)
+        $table = 'log_activity_admin l';
+        $joins = [
+            ['users u', 'l.users_id = u.id', 'left']
+        ];
+        $select = 'l.ipaddress, l.action, l.created_at, u.first_name, u.last_name, u.email';
+        $column_order   = ['','u.first_name','u.email','l.action','l.ipaddress','l.created_at'];
+        $column_search  = ['u.first_name', 'u.last_name', 'u.email'];
+        $order          = ['l.created_at' => 'asc'];
+        
+
+        $datamodel = new \App\Models\DatatablesJoin($request);
+        $datamodel->setConfig(
+            $table,
+            $column_order,
+            $column_search,
+            $order,
+            [],
+            $joins,
+            $select
+        );
+
+        if ($request->getMethod(true) === 'POST') {
+            $lists = $datamodel->get_datatables();
+            $data = [];
+            //$no = $request->getPost('start');
+            $no = $request->getPost('start') ?? 1;
+
+            foreach ($lists as $pDn) {
+                $no++;
+                $row = [];
+                $row[] = $no;
+                $row[] = $pDn->first_name.' '.$pDn->last_name;
+                $row[] = $pDn->email;
+                $row[] = $pDn->action;
+                $row[] = $pDn->ipaddress;
+                $row[] = $pDn->created_at;
+
+                $data[] = $row;
+            }
+
+            $output = [
+                'draw' => $request->getPost('draw'),
+                'recordsTotal' => $datamodel->count_all(),
+                'recordsFiltered' => $datamodel->count_filtered(),
+                'data' => $data
+            ];
+
+            return $this->response->setJSON($output);
+        }
+    }
+=======================================
+
+$table = 'log_activity_admin l';
+
+$joins = [
+    ['users u', 'l.users_id = u.id', 'left'],
+    ['roles r', 'u.role_id = r.id', 'left'],
+    ['departments d', 'u.dept_id = d.id', 'left'],
+];
+
+$select = '
+    l.ipaddress,
+    l.action,
+    l.created_at,
+    u.first_name,
+    u.last_name,
+    u.email,
+    r.name as role_name,
+    d.name as dept_name
+';
+
+$column_order = [
+    '',
+    'u.first_name',
+    'u.email',
+    'r.name',
+    'd.name',
+    'l.created_at'
+];
+
+$column_search = [
+    'u.first_name',
+    'u.last_name',
+    'u.email',
+    'r.name',
+    'd.name'
+];
+
+$order = ['l.created_at' => 'desc'];
+
+============================================================
+            <script>
+                $('#dataTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    order: [[5, 'desc']],
+                    ajax:{
+                        url: "<?= base_url($pdn_url.'/data_json')?>",
+                        type: 'POST',
+                        error: function(xhr, error, thrown) {
+                            console.log("Error DataTables:", xhr.responseText);
+                        }
+                    },
+                    columnDefs: [
+                        {
+                            "targets": [0],
+                            "sClass": "text-center",
+                            "orderable": false
+                        },
+                        {
+                            "targets": [4,5],
+                            "sClass": "text-center"
+                        }
+                    ],
+                });
+
+                function reloadTable(){
+                    $('#dataTable').DataTable().ajax.reload();
+                }
+            </script>
+============================================================
