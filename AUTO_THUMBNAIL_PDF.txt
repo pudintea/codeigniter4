@@ -1,0 +1,54 @@
+LANGKAH INSTALL
+=================
+1. INSTALL IMAGICK
+Ubuntu / VPS Linux
+> sudo apt install php-imagick
+
+Restart Apache:
+> sudo service apache2 restart
+
+2. INSTALL GHOSTSCRIPT
+> sudo apt install ghostscript
+
+3. CEK BERHASIL
+Buat file:
+phpinfo();
+
+Cari:
+imagick
+
+FITUR AUTO THUMBNAIL
+Setelah upload PDF sukses
+
+Tambahkan ini:
+
+$pdfPath = FCPATH . 'uploads/produk/' . $pdnNameFile;
+$thumbnailName = pathinfo($pdnNameFile, PATHINFO_FILENAME) . '.jpg';
+$thumbnailPath = FCPATH . 'uploads/cover_produk/' . $thumbnailName;
+$imagick = new \Imagick();
+$imagick->setResolution(200, 200);
+$imagick->readImage($pdfPath . '[0]');
+$imagick->setImageFormat('jpg');
+$imagick->thumbnailImage(400, 560);
+$imagick->writeImage($thumbnailPath);
+$imagick->clear();
+$imagick->destroy();
+
+
+💡 Penjelasan penting
+[0]
+readImage($pdfPath . '[0]')
+
+Artinya:
+ambil halaman pertama PDF
+Thumbnail akan otomatis dibuat
+
+Misal:
+panduan.pdf
+otomatis:
+panduan.jpg
+🚀 Simpan ke database
+'cover_produk' => $thumbnailName,
+
+
+========= PUDIN SAEPUDIN ========
