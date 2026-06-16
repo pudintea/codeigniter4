@@ -5,6 +5,13 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+// === LOGIN dan LOGOUT ==========
+// require APPPATH . 'Routes/auth.php';
+
+// ======== ADMIN =================
+// require APPPATH . 'Routes/admin.php';
+
+
 $routes->get('/', 'Home::index');
 $routes->get('/dashboard', 'Dashboard::index', ['filter'=>'pdnislogin']);
 $routes->match(['GET','POST'],'/login', 'Bo::login');
