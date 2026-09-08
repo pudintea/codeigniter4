@@ -81,6 +81,21 @@ CREATE TABLE peserta (
 
     UNIQUE KEY unique_email (email)
 );
+
+// Pengembangan
+CREATE TABLE peserta (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    kode VARCHAR(150) NOT NULL,
+    nama_lengkap VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    instansi_id INT UNSIGNED,
+    telepon VARCHAR(30) NOT NULL,
+    sertifikat VARCHAR(255) DEFAULT NULL,
+    created_at DATETIME NULL,
+    updated_at DATETIME NULL,
+    UNIQUE KEY unique_email (email),
+    UNIQUE KEY unique_kode (kode)
+);
 ```
 
  Saya sengaja menambahkan kolom:
