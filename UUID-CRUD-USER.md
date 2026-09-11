@@ -251,6 +251,18 @@ class CreateUsersTable extends Migration
                 'constraint' => 255,
             ],
 
+            'role' => [
+                'type'       => 'ENUM',
+                'constraint' => ['admin', 'user'],
+                'default'    => 'user',
+            ],
+
+            'status' => [
+                'type'       => 'TINYINT',
+                'constraint' => 1,
+                'default'    => 1,
+            ],
+
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,
@@ -325,6 +337,11 @@ users
 
  # 8\. Membuat Model User
 
+ Install UUID
+```
+composer require michalsn/codeigniter4-uuid   
+```
+
  Buat:
 
 ```
@@ -339,9 +356,11 @@ app/Models/UserModel.php
 namespace App\Models;
 
 use CodeIgniter\Model;
+use Michalsn\CodeIgniterUuid\Traits\HasUuid;
 
 class UserModel extends Model
 {
+    use HasUuid;
     protected $table = 'users';
 
     protected $primaryKey = 'id';
@@ -353,12 +372,19 @@ class UserModel extends Model
     protected $allowedFields = [
         'id',
         'name',
+        'role',
         'email',
         'password',
     ];
 
+    protected array $casts = [
+        // Menggunakan UUID v7 sebagai primary key
+        'id' => 'uuid[v7]',
+    ];
+
     protected $useTimestamps = true;
 }
+
 ```
 
  Bagian paling penting:
@@ -384,6 +410,12 @@ protected $useAutoIncrement = false;
  ID akan kita generate sendiri menggunakan UUID.
 
 ---
+
+Manual: Jika ingin menggunakan UUID untuk field selain primary key (misalnya tracking_id), Anda harus membuatnya secara manual menggunakan service:
+```
+use Michalsn\CodeIgniterUuid\Enums\UuidVersion;
+$trackingId = service('uuid')->generate(UuidVersion::V4)->toRfc4122();   
+```
 
  # 9\. Membuat UUID
 
